@@ -8,6 +8,8 @@
 
 # nano-svg2js
 
+[![Join the chat at https://gitter.im/Holixus/nano-svg2js](https://badges.gitter.im/Holixus/nano-svg2js.svg)](https://gitter.im/Holixus/nano-svg2js?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+
 SVG to JS.
 
 
