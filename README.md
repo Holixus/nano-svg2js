@@ -10,6 +10,24 @@
 
 SVG to JS.
 
+## API
+
+### parseSVG(svg_text)
+
+Return `Promise` object of parsed svg.
+
+### optimizeIds(jsvg)
+
+Returns modified(in place) jsvg tree with short ids except symbols identifiers.
+
+### optimizeJSVG(jsvg)
+
+Returns optimized in place jsvg tree.
+
+### packJSVG(jsvg)
+
+Returns packed JSVG tree.
+
 
 [gitter-image]: https://badges.gitter.im/Holixus/nano-svg2js.svg
 [gitter-url]: https://gitter.im/Holixus/nano-svg2js
