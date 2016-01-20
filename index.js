@@ -19,9 +19,12 @@ exports.optimizeIds = function packIds(js, prefix) {
 	var ids = {},
 	    symbols = {};
 
+	if (!prefix)
+		prefix = '';
+
 	deep('', js, function (id, value, tag) {
 		if (id === 'id') {
-			if (tag === 'symbol')
+			if (tag === 'symbol') // don't rename symbols ids
 				symbols[value] = value;
 			ids[value] = value;
 		}
@@ -29,9 +32,10 @@ exports.optimizeIds = function packIds(js, prefix) {
 	});
 
 	var i = 0;
+
 	for (var id in ids) {
 		if (!symbols[id])
-			ids[id] = prefix+ ++i;
+			ids[id] = prefix+ (++i).toString(36);
 	}
 
 	deep('', js, function (id, value) {

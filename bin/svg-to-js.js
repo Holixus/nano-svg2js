@@ -67,13 +67,13 @@ function js2str(o, tab) {
 			res(t);
 	})
 })).then(function (svg) {
-	return svg2js.parse(svg);
+	return svg2js.parseSVG(svg);
 }).then(function (js) {
 	return opts.ids ? svg2js.optimizeIds(js, opts.ids) : js;
 }).then(function (js) {
-	return opts.join ? svg2js.optimizeSVG(js) : js;
+	return opts.join ? svg2js.optimizeJSVG(js) : js;
 }).then(function (js) {
-	return opts.pack ? svg2js.pack(js) : js;
+	return opts.pack ? svg2js.packJSVG(js) : js;
 }).then(function (js) {
 	return opts.stringify ? JSON.stringify(js) : js2str(js);
 }).then(function (text) {
