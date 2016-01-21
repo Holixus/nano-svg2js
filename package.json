@@ -1,6 +1,6 @@
 {
   "name": "nano-svg2js",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A little module for conversion of SVG to JS object for embedding to web applications",
   "keywords" : [ "SVG" ],
   "bin": {
@@ -18,7 +18,7 @@
   "devDependencies": {
     "core-assert": "0",
     "clone": "1",
-    "nano-json": 1,
+    "nano-json": "1",
     "mocha": "2",
     "colors": "0",
     "istanbul": "0"
