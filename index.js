@@ -80,20 +80,23 @@ exports.packJSVG = function packJSML(js) {
 		if (strs[t] > 1)
 			a.push([t, strs[t]]);
 
-	a.sort(function (l, r) {
-		return l[1] === r[1] ? 0 : (l[1] < r[1] ? 1 : -1);
-	});
+	if (a.length) {
+		a.sort(function (l, r) {
+			return l[1] === r[1] ? 0 : (l[1] < r[1] ? 1 : -1);
+		});
 
-	//console.log(a);
+		//console.log(a);
 
-	for (var i = 0, n = a.length; i < n; ++i)
-		voc[a[i] = a[i][0]] = last++;
+		for (var i = 0, n = a.length; i < n; ++i)
+			voc[a[i] = a[i][0]] = last++;
 
-	deep(js, function (t) {
-		return t in voc ? voc[t] : t;
-	});
+		deep(js, function (t) {
+			return t in voc ? voc[t] : t;
+		});
 
-	js.unshift('[voc]', a.join('\t'));
+		js.unshift('[voc]', a.join('\t'));
+	}
+
 	return js;
 };
 
@@ -116,7 +119,7 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 		if (s.id) {
 			s.dom = o;
 			return s;
-		}
+		} // else remove symbole without id
 	}
 
 	function getStop(o) {
@@ -137,11 +140,14 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 			if (o.length)
 				s.dom = o;
 			return s;
-		}
+		} // else remove stop without color
 	}
 
 	function getGradient(o) {
-		var key, s = { stops: [], line: {} };
+		var key,
+		    s = { stops: [] },
+		    line = { x1:'0', y1:'0', x2:'', y2:'' },
+		    rad = { cx:'0', cy:'0', r:'0' };
 		for (var i = 0, n = o.length; i < n; i += 2) {
 			var key = o[i],
 			    value = o[i+1];
@@ -154,11 +160,20 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 					continue;
 				s.stops.push(stop.offset, stop.color+(stop.opacity ? ','+stop.opacity : ''));
 				break;
+			case 'cx':
+			case 'cy':
+			case 'fx':
+			case 'fy':
+			case 'r':
+				rad[key] = value;
+				s.rad = rad;
+				break;
 			case 'x1':
 			case 'x2':
 			case 'y1':
 			case 'y2':
-				s.line[key] = value;
+				line[key] = value;
+				s.line = line;
 				break;
 			case 'id':
 			case 'gradientUnits':
@@ -168,17 +183,20 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 			i -= 2;
 		}
 		if (s.id) {
-			o.unshift('line', [ s.line.x1, s.line.y1, s.line.x2 || s.line.x1, s.line.y2 || s.line.y1 ].join(' '));
+			if (s.line)
+				o.unshift('line', [ s.line.x1, s.line.y1, s.line.x2 || s.line.x1, s.line.y2 || s.line.y1 ].join(' '));
+			if (s.rad)
+				o.unshift('rad', [ s.rad.cx, s.rad.cy, s.rad.r, s.rad.fx || '', s.rad.fy || '' ].join(' '));
 			delete s.line;
 			if (s.stops.length) 
 				o.push('stops', s.stops);
 			s.dom = o;
 			return s;
-		}
+		} // else remove gradient without id
 	}
 
 	function getFilter(o) {
-		var key, f = { box: {} };
+		var key, f = { box: { x:'0', y:'0', width:'0', height:'0' } };
 		for (var i = 0, n = o.length; i < n; i += 2) {
 			var key = o[i],
 			    value = o[i+1];
@@ -203,7 +221,7 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 			delete f.box;
 			f.dom = o;
 			return f;
-		}
+		} // else remove filter without id
 	}
 
 	function optimizeDefs(o) {
@@ -218,14 +236,14 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 			case 'filter':
 				var f = getFilter(o[i+1]);
 				if (!f)
-					continue;
+					break;
 				filters[f.id] = f;
 				break;
 			case 'linearGradient':
 			case 'radialGradient':
 				var g = getGradient(o[i+1]);
 				if (!g)
-					continue;
+					break;
 				(tag.charAt(0) === 'l' ? lgs : rgs)[g.id] = g;
 			}
 			o.splice(i, 2);
@@ -272,11 +290,10 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 		switch (o[i]) {
 		case 'symbol':
 			var s = getSymbol(o[i+1]);
-			if (s) {
-				o.splice(i, 2);
-				i -= 2;
+			if (s)
 				symbols[s.id] = s;
-			}
+			o.splice(i, 2);
+			i -= 2;
 			break;
 		case 'defs':
 			optimizeDefs(o[i+1]);
@@ -288,7 +305,7 @@ exports.optimizeJSVG = function optimizeJSML(o) {
 		var by_viewBox = { '': [] };
 		for (var id in symbols) {
 			var s = symbols[id],
-			    box = s.viewBox || '';
+			    box = s.viewBox;
 			(by_viewBox[box] || (by_viewBox[box] = [])).push(s);
 			delete s.viewBox;
 		}
