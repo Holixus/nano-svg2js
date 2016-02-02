@@ -1,6 +1,6 @@
 {
   "name": "nano-svg2js",
-  "version": "1.0.5",
+  "version": "1.0.6",
   "description": "A little module for conversion of SVG to JS object for embedding to web applications",
   "keywords" : [ "SVG" ],
   "bin": {
@@ -13,7 +13,8 @@
     "test-travis": "istanbul cover node_modules/mocha/bin/_mocha --report lcovonly -- --reporter dot -u tdd"
   },
   "dependencies": {
-    "sax": "1"
+    "sax": "1",
+    "nano-json": "1"
   },
   "devDependencies": {
     "core-assert": "0",
