@@ -1,6 +1,6 @@
 {
   "name": "nano-svg2js",
-  "version": "1.0.6",
+  "version": "1.0.7",
   "description": "A little module for conversion of SVG to JS object for embedding to web applications",
   "keywords" : [ "SVG" ],
   "bin": {
@@ -14,7 +14,8 @@
   },
   "dependencies": {
     "sax": "1",
-    "nano-json": "1"
+    "nano-json": "1",
+    "node-getopt": "0"
   },
   "devDependencies": {
     "core-assert": "0",
