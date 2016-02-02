@@ -19,7 +19,7 @@ var svg2js = require('nano-svg2js'),
 	    ]);
 
 	getopt.setHelp("\
-svg-to-js.js v1.00 (c) Vladimir Antonov 2015-2016\n\
+svg-to-js.js v1.0 (c) Vladimir Antonov 2015-2016\n\
 Usage: node svg-to-js.js [OPTIONS] source_file [destination_file]\n\
 Options:\n\
 [[OPTIONS]]\n");
@@ -38,6 +38,10 @@ Options:\n\
 
 	if (argv.length)
 		opts.infile = argv[0];
+	else {
+		getopt.showHelp();
+		process.exit(1);
+	}
 
 	opts.outfile = argv.length > 1 ? argv[1] : opts.infile.replace(/\.svg$/, '.js');
 })();
