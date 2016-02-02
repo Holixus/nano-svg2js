@@ -49,9 +49,9 @@ function js2str(o, tab) {
 		tab = '';
 	out += '[\n\t'+tab;
 	for (var i = 0, n = o.length; i < n; i += 2) {
-		out += json.obj2str(o[i]) + ', ';
+		out += json.js2str(o[i]) + ', ';
 		var v = o[i+1];
-		out += ((typeof v !== 'object') ? json.obj2str(v) : js2str(v, tab+'\t'));
+		out += ((typeof v !== 'object') ? json.js2str(v) : js2str(v, tab+'\t'));
 		if (i < n - 2)
 			out += ',\n\t'+tab;
 	}
